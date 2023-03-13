@@ -4,9 +4,10 @@
 <head>
     <meta charset="utf-8"/>
     <title>Chat Room</title>
+    <link rel="shortcut icon" href="#">
 </head>
 <body>
-    <textarea id="chat-log" cols="100" rows="20"></textarea><br>
+    <textarea id="chat-log" cols="100" rows="20" readonly="readonly"></textarea><br>
     <input id="chat-message-input" type="text" size="100"><br>
     <input id="chat-message-submit" type="button" value="Send">
     {{ room_name|json_script:"room-name" }}
@@ -44,6 +45,7 @@
                 'message': message
             }));
             messageInputDom.value = '';
+            document.querySelector('#chat-message-input').focus();
         };
     </script>
 </body>
