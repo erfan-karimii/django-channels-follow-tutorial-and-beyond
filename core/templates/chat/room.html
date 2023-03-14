@@ -7,10 +7,54 @@
     <link rel="shortcut icon" href="#">
 </head>
 <body>
-    <textarea id="chat-log" cols="100" rows="20" readonly="readonly"></textarea><br>
+    <textarea id="chat-log" cols="100" rows="20" readonly="readonly">
+    {% for chat in chats %}
+        {% if request.user.is_authenticated %}
+            {% if chat.user.username == request.user.username %}
+                me : {{chat.content}}
+            {% else %}
+                {{chat.user.username}} : {{chat.content}}
+            {% endif %}
+        {% else %}
+        ano : {{chat.content}}
+        {% endif %}
+    {% endfor %}</textarea><br>
     <input id="chat-message-input" type="text" size="100"><br>
     <input id="chat-message-submit" type="button" value="Send">
     {{ room_name|json_script:"room-name" }}
+    <script>
+        {% if request.user.is_anonymous %}
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        ano_user_cookie = getCookie('anonymoususer')
+        alert(ano_user_cookie)
+        if (ano_user_cookie == null || ano_user_cookie == undefined){
+            var now = new Date();
+            now.setTime(now.getTime() + 1 * 3600 * 1000);
+            id = uuidv4()
+            document.cookie = `anonymoususer=anonymous-user-${id};path=/;expires=` + now.toUTCString() + ";";
+            alert('ما برای تجربه بهتر در استفاده از سایت از کوکی استفاده میکنیم ')
+        }
+        function uuidv4() {
+            return ([1e7]+1e3).replace(/[018]/g, c =>
+              (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+            );
+          } 
+        {% endif %}
+    </script>
     <script>
         const roomName = JSON.parse(document.getElementById('room-name').textContent);
 
@@ -21,6 +65,12 @@
             + roomName
             + '/'
         );
+
+        {% comment %} chatSocket.onopen = function(e) {
+            chatSocket.send(JSON.stringify({
+                'message': 'joined.'
+            }));;
+        }; {% endcomment %}
 
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
@@ -47,6 +97,7 @@
             messageInputDom.value = '';
             document.querySelector('#chat-message-input').focus();
         };
+
     </script>
 </body>
 </html>
