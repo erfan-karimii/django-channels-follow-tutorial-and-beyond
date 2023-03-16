@@ -1,2 +1,2 @@
 # django-channels-read-docs-and-follow
- this a my first time i want seriously follow django channels , learn more about ws and as always have fun:)
+ this a my first time i want seriously follow django channels official docs , learn more about ws , extend it to realworld use case and as always have fun:)
