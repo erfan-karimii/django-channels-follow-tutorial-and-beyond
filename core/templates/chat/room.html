@@ -8,17 +8,10 @@
 </head>
 <body>
     <textarea id="chat-log" cols="100" rows="20" readonly="readonly">
-    {% for chat in chats %}
-        {% if request.user.is_authenticated %}
-            {% if chat.user.username == request.user.username %}
-                me : {{chat.content}}
-            {% else %}
-                {{chat.user.username}} : {{chat.content}}
-            {% endif %}
-        {% else %}
-        ano : {{chat.content}}
-        {% endif %}
-    {% endfor %}</textarea><br>
+{% for chat in chats %}
+{% if chat.username == request.user.username %}me : {{chat.content}}{% else %}{{chat.username}} : {{chat.content}}{% endif %}
+{% endfor %}
+    </textarea><br>
     <input id="chat-message-input" type="text" size="100"><br>
     <input id="chat-message-submit" type="button" value="Send">
     {{ room_name|json_script:"room-name" }}
@@ -40,7 +33,6 @@
             return cookieValue;
         }
         ano_user_cookie = getCookie('anonymoususer')
-        alert(ano_user_cookie)
         if (ano_user_cookie == null || ano_user_cookie == undefined){
             var now = new Date();
             now.setTime(now.getTime() + 1 * 3600 * 1000);
