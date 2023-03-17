@@ -52,9 +52,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def chat_message(self, event):
         message = event["message"]
         username = event["username"]
-        print(username,self.user_name,message)
         # Send message to WebSocket
-        await self.send(text_data=json.dumps({"message":  username + " : " + message}))
+        await self.send(text_data=json.dumps({"message": message,"username" : username}))
     
     async def create_chat_obj(self,message):
         # Find room object

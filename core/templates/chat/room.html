@@ -1,11 +1,31 @@
 {% extends 'base.html' %}
 
 {% block body %}
-<textarea id="chat-log" class="form-control" cols="100" rows="20" readonly="readonly">
+{% comment %} <textarea id="chat-log" class="form-control" cols="100" rows="20" readonly="readonly">
 {% for chat in chats %}
 {% if chat.username == request.user.username %}{{chat.content}} : من{% else %}{{chat.content}} : {{chat.username}}{% endif %}
 {% endfor %}
-</textarea>
+</textarea> {% endcomment %}
+{% for chat in chats %}
+{% if chat.username == request.user.username %}
+<div class="chat-messages">
+    <div class="message-box-holder">
+        <div class="message-box">
+        {{chat.content}}
+        </div>
+    </div> {% comment %} comment yhis </div>  :) {% endcomment %} 
+</div>
+{% else %}
+<div class="message-box-holder">
+    <div class="message-sender">
+        {{chat.username}}
+    </div>
+    <div class="message-box message-partner">
+        {{chat.content}}
+    </div>
+</div>
+{% endif %}
+{% endfor %}
 <br>
 <div class="input-group mb-3">
     <input type="text" class="form-control" id="chat-message-input" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="button-addon2">
@@ -66,7 +86,13 @@
 
     chatSocket.onmessage = function(e) {
         const data = JSON.parse(e.data);
-        document.querySelector('#chat-log').value += (data.message + '\n');
+        {% comment %} document.querySelector('#chat-log').value += (data.message + '\n'); {% endcomment %}
+        if (data.username == '{{request.user.username}}') {
+            $('.input-group').before(`<div class="chat-messages"><div class="message-box-holder"><div class="message-box">${data.message}</div></div></div>`)
+        } else {
+            $('.input-group').before(`<div class="message-box-holder"><div class="message-sender">${data.username}</div><div class="message-box message-partner">${data.message}</div></div>`)
+            
+        }
     };
 
     chatSocket.onclose = function(e) {
@@ -91,3 +117,4 @@
     };
 </script>
 {% endblock js %}
+
