@@ -1,95 +1,93 @@
-<!-- chat/templates/chat/room.html -->
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8"/>
-    <title>Chat Room</title>
-    <link rel="shortcut icon" href="#">
-</head>
-<body>
-    <textarea id="chat-log" cols="100" rows="20" readonly="readonly">
+{% extends 'base.html' %}
+
+{% block body %}
+<textarea id="chat-log" class="form-control" cols="100" rows="20" readonly="readonly">
 {% for chat in chats %}
-{% if chat.username == request.user.username %}me : {{chat.content}}{% else %}{{chat.username}} : {{chat.content}}{% endif %}
+{% if chat.username == request.user.username %}{{chat.content}} : من{% else %}{{chat.content}} : {{chat.username}}{% endif %}
 {% endfor %}
-    </textarea><br>
-    <input id="chat-message-input" type="text" size="100"><br>
-    <input id="chat-message-submit" type="button" value="Send">
-    {{ room_name|json_script:"room-name" }}
-    <script>
-        {% if request.user.is_anonymous %}
-        function getCookie(name) {
-            var cookieValue = null;
-            if (document.cookie && document.cookie != '') {
-                var cookies = document.cookie.split(';');
-                for (var i = 0; i < cookies.length; i++) {
-                    var cookie = cookies[i].trim();
-                    // Does this cookie string begin with the name we want?
-                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
+</textarea>
+<br>
+<div class="input-group mb-3">
+    <input type="text" class="form-control" id="chat-message-input" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="button-addon2">
+    <button class="btn btn-outline-secondary" type="button" id="chat-message-submit">ارسال</button>
+</div>
+{% endblock body %}
+
+{% block js %}
+{{ room_name|json_script:"room-name" }}
+<script>
+    {% if request.user.is_anonymous %}
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
                 }
             }
-            return cookieValue;
         }
-        ano_user_cookie = getCookie('anonymoususer')
-        if (ano_user_cookie == null || ano_user_cookie == undefined){
-            var now = new Date();
-            now.setTime(now.getTime() + 1 * 3600 * 1000);
-            id = uuidv4()
-            document.cookie = `anonymoususer=anonymous-user-${id};path=/;expires=` + now.toUTCString() + ";";
-            alert('ما برای تجربه بهتر در استفاده از سایت از کوکی استفاده میکنیم ')
-        }
-        function uuidv4() {
-            return ([1e7]+1e3).replace(/[018]/g, c =>
-              (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-            );
-          } 
-        {% endif %}
-    </script>
-    <script>
-        const roomName = JSON.parse(document.getElementById('room-name').textContent);
-
-        const chatSocket = new WebSocket(
-            'ws://'
-            + window.location.host
-            + '/ws/chat/'
-            + roomName
-            + '/'
+        return cookieValue;
+    }
+    ano_user_cookie = getCookie('anonymoususer')
+    if (ano_user_cookie == null || ano_user_cookie == undefined){
+        var now = new Date();
+        now.setTime(now.getTime() + 1 * 3600 * 1000);
+        id = uuidv4()
+        document.cookie = `anonymoususer=anonymous-user-${id};path=/;expires=` + now.toUTCString() + ";";
+        alert('ما برای تجربه بهتر در استفاده از سایت از کوکی استفاده میکنیم ')
+    }
+    function uuidv4() {
+        return ([1e7]+1e3).replace(/[018]/g, c =>
+            (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
         );
+        } 
+    {% endif %}
+</script>
+<script>
+    const roomName = JSON.parse(document.getElementById('room-name').textContent);
 
-        {% comment %} chatSocket.onopen = function(e) {
-            chatSocket.send(JSON.stringify({
-                'message': 'joined.'
-            }));;
-        }; {% endcomment %}
+    const chatSocket = new WebSocket(
+        'ws://'
+        + window.location.host
+        + '/ws/chat/'
+        + roomName
+        + '/'
+    );
 
-        chatSocket.onmessage = function(e) {
-            const data = JSON.parse(e.data);
-            document.querySelector('#chat-log').value += (data.message + '\n');
-        };
+    {% comment %} chatSocket.onopen = function(e) {
+        chatSocket.send(JSON.stringify({
+            'message': 'joined.'
+        }));;
+    }; {% endcomment %}
 
-        chatSocket.onclose = function(e) {
-            console.error('Chat socket closed unexpectedly');
-        };
+    chatSocket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+        document.querySelector('#chat-log').value += (data.message + '\n');
+    };
 
+    chatSocket.onclose = function(e) {
+        console.error('Chat socket closed unexpectedly');
+    };
+
+    document.querySelector('#chat-message-input').focus();
+    document.querySelector('#chat-message-input').onkeyup = function(e) {
+        if (e.keyCode === 13) {  // enter, return
+            document.querySelector('#chat-message-submit').click();
+        }
+    };
+
+    document.querySelector('#chat-message-submit').onclick = function(e) {
+        const messageInputDom = document.querySelector('#chat-message-input');
+        const message = messageInputDom.value;
+        chatSocket.send(JSON.stringify({
+            'message': message
+        }));
+        messageInputDom.value = '';
         document.querySelector('#chat-message-input').focus();
-        document.querySelector('#chat-message-input').onkeyup = function(e) {
-            if (e.keyCode === 13) {  // enter, return
-                document.querySelector('#chat-message-submit').click();
-            }
-        };
-
-        document.querySelector('#chat-message-submit').onclick = function(e) {
-            const messageInputDom = document.querySelector('#chat-message-input');
-            const message = messageInputDom.value;
-            chatSocket.send(JSON.stringify({
-                'message': message
-            }));
-            messageInputDom.value = '';
-            document.querySelector('#chat-message-input').focus();
-        };
-
-    </script>
-</body>
-</html>
+    };
+</script>
+{% endblock js %}

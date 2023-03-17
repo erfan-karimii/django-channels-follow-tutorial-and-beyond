@@ -1,36 +1,59 @@
-<!-- chat/templates/chat/index.html -->
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8"/>
-    <title>Chat Rooms</title>
-    <link rel="shortcut icon" href="#">
-</head>
-<body>
-    What chat room would you like to enter?<br>
-    <input id="room-name-input" type="text" size="100"><input id="random-generator" type="button" value="random"><br>
-    <input id="room-name-submit" type="button" value="Enter">
+{% extends 'base.html' %}
+{% load static %}
 
-    <script>
-        document.querySelector('#room-name-input').focus();
-        document.querySelector('#room-name-input').onkeyup = function(e) {
-            if (e.keyCode === 13) {  // enter, return
-                document.querySelector('#room-name-submit').click();
-            }
-        };
+{% block body %}
+<div id="carouselExampleDark" class="carousel carousel-dark slide" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+      <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+      <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="1" aria-label="Slide 2"></button>
+      <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="2" aria-label="Slide 3"></button>
+    </div>
+    <div class="carousel-inner">
+      <div class="carousel-item active" data-bs-interval="10000">
+        <img src="{% static 'img/slider4.png' %}" class="d-block w-100" alt="slider image">
+        <div class="carousel-caption d-none d-md-block">
+          <h5>اولین قانون رعایت ادب</h5>
+          <p>Some representative placeholder content for the first slide.</p>
+        </div>
+      </div>
+      <div class="carousel-item" data-bs-interval="2000">
+        <img src="{% static 'img/slider2.png' %}" class="d-block w-100" alt="slider image">
+        <div class="carousel-caption d-none d-md-block">
+          <h5>Second slide label</h5>
+          <p>Some representative placeholder content for the second slide.</p>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <img src="{% static 'img/slider3.png' %}" class="d-block w-100" alt="slider image">
+        <div class="carousel-caption d-none d-md-block">
+          <h5>بزن بریم برای چت</h5>
+          <p>Some representative placeholder content for the third slide.</p>
+        </div>
+      </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+</div>
 
-        document.querySelector('#room-name-submit').onclick = function(e) {
-            var roomName = document.querySelector('#room-name-input').value;
-            window.location.pathname = '/chat/' + roomName + '/';
-        };
-        document.querySelector('#random-generator').onclick = function(e) {
-            document.querySelector('#room-name-input').value = uuidv4();
-        };
-        function uuidv4() {
-            return ([1e7]+1e3+4e3+8e3+1e11).replace(/[018]/g, c =>
-              (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-            );
-          }          
-    </script>
-</body>
-</html>
+<div class="mb-3">
+    <label for="room-name-input" class="form-label">کدوم اتاق میخوای بری؟</label>
+    <input id="room-name-input" type="text" size="100" class="form-control">
+</div>
+
+<div class="mb-3">
+    <button id="random-generator" type="submit" class="btn btn-outline-primary">رندوم</button>
+    <button id="room-name-submit" type="submit" class="btn btn-primary">ورود</button>
+</div>
+{% endblock body %}
+
+{% block js %}
+<script>
+    document.querySelector('#room-name-input').focus();          
+</script>
+{% endblock js %}
