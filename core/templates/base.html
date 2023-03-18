@@ -10,6 +10,9 @@
     
     <link rel="shortcut icon" href="#">
     <link href="{% static 'css/bootstrap.rtl.min.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'css/bootstrap.rtl.min.css.map' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'fontawesomefree/css/fontawesome.css' %}" rel="stylesheet" type="text/css">
+    
     <link href="{% static 'css/style.css' %}" rel="stylesheet" type="text/css" />
 
 
@@ -21,12 +24,14 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <form class="d-flex">
+                <form class="d-flex ">
                     <input class="form-control me-2" type="search" placeholder="جست و جو" aria-label="Search">
                     <button class="btn btn-outline-success" type="submit">برو</button>
                 </form>
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/chat/">خانه</a>
+                </li>
                   <li class="nav-item">
                     <a class="nav-link" href="#">Link</a>
                   </li>
@@ -41,16 +46,13 @@
                       <li><a class="dropdown-item" href="#">Something else here</a></li>
                     </ul>
                   </li>
-                  <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/chat/">خانه</a>
-                  </li>
+                  {% block li %}{% endblock li %}
                 </ul>
             </div>
           <a class="navbar-brand" href="#">AnoChat</a>
         </div>
     </nav>
-    <div class="container">
-    {% comment %} <div class="b-example-divider"></div> {% endcomment %}
+    <div class="container" id="main-container">
     {% block body %}{% endblock body %}
     </div>
     <div class="container">
@@ -114,7 +116,40 @@
     </div>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
     <script type="text/javascript" src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/bootstrap.bundle.js.map' %}"></script>
     <script type="text/javascript" src="{% static 'js/main.js' %}"></script>
+    <script>
+      {% if request.user.is_anonymous %}
+      function getCookie(name) {
+          var cookieValue = null;
+          if (document.cookie && document.cookie != '') {
+              var cookies = document.cookie.split(';');
+              for (var i = 0; i < cookies.length; i++) {
+                  var cookie = cookies[i].trim();
+                  // Does this cookie string begin with the name we want?
+                  if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                      cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                      break;
+                  }
+              }
+          }
+          return cookieValue;
+      }
+      ano_user_cookie = getCookie('anonymoususer')
+      if (ano_user_cookie == null || ano_user_cookie == undefined){
+          var now = new Date();
+          now.setTime(now.getTime() + 1 * 3600 * 1000);
+          id = uuidv4()
+          document.cookie = `anonymoususer=anonymous-user-${id};path=/;expires=` + now.toUTCString() + ";";
+          alert('ما برای تجربه بهتر در استفاده از سایت از کوکی استفاده میکنیم ')
+      }
+      function uuidv4() {
+          return ([1e7]+1e3).replace(/[018]/g, c =>
+              (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+          );
+          } 
+      {% endif %}
+    </script>
     {% block js %}{% endblock js %}
 </body>
 </html>

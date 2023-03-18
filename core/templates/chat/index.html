@@ -43,17 +43,40 @@
 
 <div class="mb-3">
     <label for="room-name-input" class="form-label">کدوم اتاق میخوای بری؟</label>
-    <input id="room-name-input" type="text" size="100" class="form-control">
+    <input id="room-name-input" type="text" size="100" class="form-control" placeholder="اگه لینک دعوت داری همینجا وارد کن.">
 </div>
 
 <div class="mb-3">
     <button id="random-generator" type="submit" class="btn btn-outline-primary">رندوم</button>
     <button id="room-name-submit" type="submit" class="btn btn-primary">ورود</button>
 </div>
+
+
 {% endblock body %}
 
 {% block js %}
 <script>
-    document.querySelector('#room-name-input').focus();          
+document.querySelector('#room-name-input').focus();          
+
+document.querySelector('#room-name-input').onkeyup = function(e) {
+  if (e.keyCode === 13) {  // enter, return
+      document.querySelector('#room-name-submit').click();
+  }
+};
+
+document.querySelector('#room-name-submit').onclick = function(e) {
+  var roomName = document.querySelector('#room-name-input').value;
+  if (roomName){
+      window.location.pathname = '/chat/' + roomName + '/';
+  }
+};
+document.querySelector('#random-generator').onclick = function(e) {
+  document.querySelector('#room-name-input').value = uuidv4();
+};
+function uuidv4() {
+  return ([1e7]+1e3+4e3+8e3+1e11).replace(/[018]/g, c =>
+    (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+  );
+}
 </script>
 {% endblock js %}
