@@ -1,3 +1,4 @@
 save chat in external database.
 spinner
 fix copy to clipboard bug
+emoji chat
