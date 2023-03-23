@@ -15,3 +15,7 @@ def room(request, room_name):
         room.save()
 
     return render(request, "chat/room.html", {"room_name": room_name,'chats':chats})
+
+def sign_in(request):
+    
+    return render(request,'chat/signin.html',{})

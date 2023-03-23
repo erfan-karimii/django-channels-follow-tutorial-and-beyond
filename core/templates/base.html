@@ -12,9 +12,10 @@
     <link href="{% static 'css/bootstrap.rtl.min.css' %}" rel="stylesheet" type="text/css" />
     <link href="{% static 'css/bootstrap.rtl.min.css.map' %}" rel="stylesheet" type="text/css" />
     <link href="{% static 'fontawesomefree/css/fontawesome.css' %}" rel="stylesheet" type="text/css">
-    
+
     <link href="{% static 'css/style.css' %}" rel="stylesheet" type="text/css" />
 
+    {% block css %}{% endblock css %}
 
 </head>
 <body>
@@ -33,9 +34,12 @@
                     <a class="nav-link active" aria-current="page" href="/chat/">خانه</a>
                 </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
+                    <a class="nav-link" href="{% url 'chat:sign-in' %}">ورود</a>
                   </li>
-                  <li class="nav-item dropdown">
+                  <li class="nav-item">
+                    <a class="nav-link" href="#">راهنمای سایت</a>
+                  </li>
+                  {% comment %} <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                       Dropdown
                     </a>
@@ -45,7 +49,7 @@
                       <li><hr class="dropdown-divider"></li>
                       <li><a class="dropdown-item" href="#">Something else here</a></li>
                     </ul>
-                  </li>
+                  </li> {% endcomment %}
                   {% block li %}{% endblock li %}
                 </ul>
             </div>
@@ -59,57 +63,47 @@
         <footer class="py-5">
           <div class="row">
             <div class="col-2">
-              <h5>Section</h5>
+              <h5>لینک های مفید</h5>
               <ul class="nav flex-column">
-                <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Home</a></li>
-                <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Features</a></li>
-                <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Pricing</a></li>
-                <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">FAQs</a></li>
-                <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">About</a></li>
+                <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">خانه</a></li>
+                <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">ورود</a></li>
+                <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">راهنمای سایت</a></li>
+                <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">درباره ما</a></li>
               </ul>
             </div>
       
             <div class="col-2">
-              <h5>Section</h5>
+              <h5>اتاق های جذاب</h5>
               <ul class="nav flex-column">
-                <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Home</a></li>
-                <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Features</a></li>
-                <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Pricing</a></li>
-                <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">FAQs</a></li>
-                <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">About</a></li>
+                <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">?</a></li>
+                <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">?</a></li>
+                <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">?</a></li>
+                <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">?</a></li>
               </ul>
             </div>
       
             <div class="col-2">
-              <h5>Section</h5>
-              <ul class="nav flex-column">
-                <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Home</a></li>
-                <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Features</a></li>
-                <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Pricing</a></li>
-                <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">FAQs</a></li>
-                <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">About</a></li>
-              </ul>
             </div>
       
             <div class="col-4 offset-1">
               <form>
-                <h5>Subscribe to our newsletter</h5>
-                <p>Monthly digest of whats new and exciting from us.</p>
+                <h5>خبرنامه آنوچت</h5>
+                <p>برای اطلاع از اخبار و بروزرسانی های آنوچت میتونی ایمیلتو ثبت کنی</p>
                 <div class="d-flex w-100 gap-2">
                   <label for="newsletter1" class="visually-hidden">Email address</label>
-                  <input id="newsletter1" type="text" class="form-control" placeholder="Email address">
-                  <button class="btn btn-primary" type="button">Subscribe</button>
+                  <input id="newsletter1" type="text" class="form-control" placeholder="به زودی">
+                  <button class="btn btn-primary" type="button" disabled>عضویت</button>
                 </div>
               </form>
             </div>
           </div>
       
           <div class="d-flex justify-content-between py-4 my-4 border-top">
-            <p>© 2021 Company, Inc. All rights reserved.</p>
+            <p>© 2023 تمام حقوق این سایت محفوض میباشد</p>
             <ul class="list-unstyled d-flex">
-              <li class="ms-3"><a class="link-dark" href="#">telegram</a></li>
-              <li class="ms-3"><a class="link-dark" href="#">instagram</a></li>
-              <li class="ms-3"><a class="link-dark" href="#">youtube</a></li>
+              <li class="ms-3"><a class="link-dark" href="#"><img src="{% static 'img/Telegram_icon.png' %}" width="20px"></a></li>
+              <li class="ms-3"><a class="link-dark" href="#"><img src="{% static 'img/Twitter_icon.png' %}" width="20px"></a></li>
+              <li class="ms-3"><a class="link-dark" href="#"><img src="{% static 'img/WhatsApp_icon.png' %}" width="25px"></a></li>
             </ul>
           </div>
         </footer>
