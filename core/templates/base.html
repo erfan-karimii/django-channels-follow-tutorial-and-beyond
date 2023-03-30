@@ -11,8 +11,7 @@
     <link rel="shortcut icon" href="#">
     <link href="{% static 'css/bootstrap.rtl.min.css' %}" rel="stylesheet" type="text/css" />
     <link href="{% static 'css/bootstrap.rtl.min.css.map' %}" rel="stylesheet" type="text/css" />
-    <link href="{% static 'fontawesomefree/css/fontawesome.css' %}" rel="stylesheet" type="text/css">
-
+    
     <link href="{% static 'css/style.css' %}" rel="stylesheet" type="text/css" />
 
     {% block css %}{% endblock css %}
@@ -25,17 +24,23 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <form class="d-flex ">
+                {% comment %} <form class="d-flex ">
                     <input class="form-control me-2" type="search" placeholder="جست و جو" aria-label="Search">
                     <button class="btn btn-outline-success" type="submit">برو</button>
-                </form>
+                </form> {% endcomment %}
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="/chat/">خانه</a>
                 </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="{% url 'chat:sign-in' %}">ورود</a>
-                  </li>
+                {% if request.user.is_authenticated %}
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'chat:sign-out' %}">خروج</a>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'chat:sign-in' %}">ورود</a>
+                </li>
+                {% endif %}
                   <li class="nav-item">
                     <a class="nav-link" href="#">راهنمای سایت</a>
                   </li>
@@ -66,7 +71,11 @@
               <h5>لینک های مفید</h5>
               <ul class="nav flex-column">
                 <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">خانه</a></li>
+                {% if request.user.is_authenticated %}
+                <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">خروج</a></li>
+                {% else %}
                 <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">ورود</a></li>
+                {% endif %}
                 <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">راهنمای سایت</a></li>
                 <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">درباره ما</a></li>
               </ul>
