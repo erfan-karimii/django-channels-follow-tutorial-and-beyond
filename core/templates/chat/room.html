@@ -4,32 +4,30 @@
 
 {% block body %}
 {% for chat in chats %}
-{% if chat.username == request.user.username %}
-<div class="chat-messages">
-    <div class="message-box-holder">
-        <div class="message-box">
-        {{chat.content}}
+    {% if chat.username == request.user.username or chat.username == ano_user_name %}
+    <div class="chat-messages">
+        <div class="message-box-holder">
+            <div class="message-box">
+            {{chat.content}}
+            </div>
         </div>
     </div>
-</div>
-{% else %}
-<div class="message-box-holder">
-    <div class="message-sender">
-        {{chat.username}}
+    {% else %}
+    <div class="message-box-holder">
+        <div class="message-sender">
+            {{chat.username}}
+        </div>
+        <div class="message-box message-partner">
+            {{chat.content}}
+        </div>
     </div>
-    <div class="message-box message-partner">
-        {{chat.content}}
-    </div>
-</div>
-{% endif %}
+    {% endif %}
 {% endfor %}
 <br>
 <div class="input-group mb-3">
     <input type="text" class="form-control" id="chat-message-input" placeholder="پیام خود را وارد کنید" aria-label="Recipient's username" aria-describedby="button-addon2">
     <button class="btn btn-outline-secondary" type="button" id="chat-message-submit">ارسال</button>
 </div>
-
-
 
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -42,20 +40,20 @@
         <div class="modal-body">
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-sm-4">
                         {% post_to_telegram 'hi. im waitaing for you!' request.get_full_path '<img title="Telegram"  alt="telegram icon" src="/static/img/Telegram_icon.png" >'  %}
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-sm-4">
                         {% post_to_whatsapp  request.get_full_path '<img title="WhatsApp"  alt="whatsapp icon" src="/static/img/WhatsApp_icon.png" >'  %}
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-sm-4">
                         {% post_to_twitter 'hi. im waitaing for you!' request.get_full_path '<img title="Twitter"  alt="twitter icon" src="/static/img/Twitter_icon.png" >'  %}
                     </div>
                 </div>
             </div>
         </div>
         <div class="modal-footer">
-            <button data-copy-btn="buttonCopy" data-copy-url="{{request.get_full_path}}" id="copy-to-clipboard" class="btn btn-primary">ذخیره در کیبرد</button>
+            <button onclick="copyToClipboard('#copy-to-clipboard')" data-copy-url="{{request.get_full_path}}" id="copy-to-clipboard" class="btn btn-primary">ذخیره در کیبرد</button>
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
         </div>
       </div>
@@ -64,26 +62,44 @@
 {% endblock body %}
 
 {% block li %}
+
 <li class="nav-item">
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-        اشتراک گذاری
-    </button>
+    <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+            تنظیمات بیشتر
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+            <li class="nav-item">
+                <a class="dropdown-item" href="javascript:void(0);">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        اشتراک گذاری
+                    </button>
+                </a>
+            </li>
+            {% if room.creator_username == request.user.username or room.creator_username == ano_user_name %}
+            <li>
+                <a class="dropdown-item" href="javascript:void(0);">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                        <label class="form-check-label" for="flexSwitchCheckDefault">در بازه!</label>
+                    </div>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
 </li>
 {% endblock li %}
 
 {% block js %}
-{{ room_name|json_script:"room-name" }}
+{{ room.name|json_script:"room-name" }}
 <script>
-
-$("#copy-to-clipboard").click(function(){
-    var text = $(this).data('copy-url')
-    var $temp = $("<input>");
-    $("body").append($temp);
-    $temp.val(text).select();
-    document.execCommand("copy");
-    $temp.remove();
-    alert('copied')
-})
+function copyToClipboard(element) {
+  var $temp = $("<input>");
+  $("body").append($temp);
+  $temp.val($(element).data('copy-url')).select();
+  document.execCommand("copy");
+}
 </script>
 <script>
     const roomName = JSON.parse(document.getElementById('room-name').textContent);
@@ -96,15 +112,9 @@ $("#copy-to-clipboard").click(function(){
         + '/'
     );
 
-    // {% comment %} chatSocket.onopen = function(e) {
-    //     chatSocket.send(JSON.stringify({
-    //         'message': 'joined.'
-    //     }));;
-    // }; {% endcomment %}
-
     chatSocket.onmessage = function(e) {
         const data = JSON.parse(e.data);
-        if (data.username == '{{request.user.username}}') {
+        if (data.username == '{{request.user.username}}' || data.username == '{{ano_user_name}}') {
             $('.input-group').before(`<div class="chat-messages"><div class="message-box-holder"><div class="message-box">${data.message}</div></div></div>`)
         } else {
             $('.input-group').before(`<div class="message-box-holder"><div class="message-sender">${data.username}</div><div class="message-box message-partner">${data.message}</div></div>`)

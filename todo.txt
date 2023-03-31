@@ -1,3 +1,1 @@
-save chat in external database.
-fix copy to clipboard bug
-login/sign-up
+lock room by room creator ajax and view

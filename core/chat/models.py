@@ -13,6 +13,8 @@ class Chat(models.Model):
 
 class ChatRoom(models.Model):
     name = models.CharField(max_length=22)
+    creator_username = models.CharField(max_length=120,null=True)
+    is_locked = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
