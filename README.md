@@ -1,7 +1,8 @@
 # django-channels-read-docs-and-follow
 
-this is my first time i want seriously follow django channels official docs 
-oh and template is also by fuly coded by myself for the first time!?
+this is my first time i want seriously follow django channels official docs.
+<br> 
+oh and template is also fully coded by myself for the first time!?
 
 ## technologies
 
